@@ -1,0 +1,32 @@
+name: Botu Calistir
+
+on:
+  workflow_dispatch: # Manuel tetikleme için
+  schedule:
+    - cron: '0 * * * *' # Her saat başı çalışır
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodlari cek
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Kutuphaneleri yukle
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests google-genai feedparser
+
+      - name: Botu calistir
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python bot.py
+          
